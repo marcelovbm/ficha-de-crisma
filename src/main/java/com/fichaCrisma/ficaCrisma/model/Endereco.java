@@ -2,13 +2,12 @@ package com.fichaCrisma.ficaCrisma.model;
 
 public class Endereco {
 
-	private String logradouro;
 	private String nome;
-	private int numero;
+	private String numero;
 	private String bairro;
 	private String telefone1;
 	private String telefone2;
-	
+
 	public String getTelefone1() {
 		return telefone1;
 	}
@@ -21,20 +20,13 @@ public class Endereco {
 	public void setTelefone2(String telefone2) {
 		this.telefone2 = telefone2;
 	}
-	public Endereco(String logradouro, String nome, int numero, String bairro, String telefone1, String telefone2) {
+	public Endereco(String nome, String numero, String bairro, String telefone1, String telefone2) {
 		super();
-		this.logradouro = logradouro;
 		this.nome = nome;
 		this.numero = numero;
 		this.bairro = bairro;
 		this.telefone1 = telefone1;
 		this.telefone2 = telefone2;
-	}
-	public String getLogradouro() {
-		return logradouro;
-	}
-	public void setLogradouro(String logradouro) {
-		this.logradouro = logradouro;
 	}
 	public String getNome() {
 		return nome;
@@ -42,10 +34,10 @@ public class Endereco {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public int getNumero() {
+	public String getNumero() {
 		return numero;
 	}
-	public void setNumero(int numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 	public String getBairro() {

@@ -3,19 +3,20 @@ package com.fichaCrisma.ficaCrisma.model;
 import java.util.Date;
 
 public class AlunosCrisma {
-	
+
 	private String nome;
 	private Date dataNascimento;
 	private String idade;
+	private String sexo;
 	private String pai;
 	private String mae;
 	private String estadoCivil;
 	private Endereco endereco;
 	private DadosReligiosos dadosReligiosos;
 	private Catequese catequese;
-	
-	
-	public AlunosCrisma(String nome, Date dataNascimento, String idade, String pai, String mae, String estadoCivil,
+
+
+	public AlunosCrisma(String nome, Date dataNascimento, String idade, String sexo, String pai, String mae, String estadoCivil,
 			Endereco endereco, DadosReligiosos dadosReligiosos, Catequese catequese) {
 		super();
 		this.nome = nome;
@@ -27,8 +28,9 @@ public class AlunosCrisma {
 		this.endereco = endereco;
 		this.dadosReligiosos = dadosReligiosos;
 		this.catequese = catequese;
+		this.sexo = sexo;
 	}
-	
+
 	public String getNome() {
 		return nome;
 	}
@@ -83,10 +85,15 @@ public class AlunosCrisma {
 	public void setCatequese(Catequese catequese) {
 		this.catequese = catequese;
 	}
-	
+	public String getSexo() {
+		return sexo;
+	}
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
+	}
 	@Override
 	public String toString() {
 		return "[Aluno: " + this.nome + "; Idade: " + this.idade + "; Endereco: " + this.endereco.getNome() + "; Catequista: " + this.catequese.getCatequista() + "]";
 	}
-	
+
 }

@@ -11,8 +11,8 @@ public class DadosReligiosos {
 	private String celebrante;
 	private boolean primeiraEucaristia;
 	private boolean preCrisma;
-	
-	
+
+
 	public DadosReligiosos(Date batismo, String paroquiaDoBatismo, String padrinho, String madrinha, String celebrante,
 			boolean primeiraEucaristia, boolean preCrisma) {
 		super();
@@ -67,5 +67,5 @@ public class DadosReligiosos {
 	public void setPreCrisma(boolean preCrisma) {
 		this.preCrisma = preCrisma;
 	}
-	
+
 }

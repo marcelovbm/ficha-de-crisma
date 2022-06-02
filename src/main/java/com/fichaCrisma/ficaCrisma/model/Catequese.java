@@ -6,7 +6,7 @@ public class Catequese {
 	private String catequista;
 	private String comunidade;
 	private String cidade;
-	
+
 	public Catequese(String etapa, String catequista, String comunidade, String cidade) {
 		super();
 		this.etapa = etapa;

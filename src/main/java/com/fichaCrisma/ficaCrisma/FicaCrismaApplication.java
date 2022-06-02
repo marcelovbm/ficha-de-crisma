@@ -11,16 +11,14 @@ public class FicaCrismaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FicaCrismaApplication.class, args);
 	}
-	
-	 @Bean
-	  public RouteBuilder myRouter() {
-	    return new RouteBuilder() {
-	 
-	      @Override
-	      public void configure() throws Exception {
-	        from("file://C:\\Users\\MMagrinelli\\Documents\\Catequese")
-	          .to("bean:execellService?method=process");
-	      }
-	    };
-	  } 
+
+	@Bean
+	public RouteBuilder myRouter() {
+		return new RouteBuilder() {
+			@Override
+			public void configure() throws Exception {
+				from("file:///Users/mmagrinelli/Documents/Catequese").to("bean:execellService?method=process");
+			}
+		};
+	}
 }
