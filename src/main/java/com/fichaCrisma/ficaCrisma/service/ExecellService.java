@@ -46,7 +46,6 @@ public class ExecellService {
 	}
 
 	private void criaFicha(List<AlunosCrisma> alunos) {
-		alunos.stream().forEach(System.out::println);
 		ClassLoader classLoader = getClass().getClassLoader();
 		InputStream inputStream = classLoader.getResourceAsStream(TEMPLATE_FILE);
 
@@ -55,11 +54,11 @@ public class ExecellService {
 
 			for (int index = 0; index < alunos.size(); index = index + 2) {
 				inseriPrimeiroAluno(alunos.get(index), sheet);
-				if(alunos.size() > index + 1)
+				if (alunos.size() > index + 1)
 					inseriSegundoAluno(alunos.get(index + 1), sheet);
 
-				FileOutputStream fileOut = new FileOutputStream(diretorioComunidade.getAbsolutePath()
-						+ File.separator + alunos.get(index).getNome() + ".xlsx");
+				FileOutputStream fileOut = new FileOutputStream(
+						diretorioComunidade.getAbsolutePath() + File.separator + alunos.get(index).getNome() + ".xlsx");
 				wb.write(fileOut);
 				fileOut.close();
 			}
@@ -109,11 +108,6 @@ public class ExecellService {
 		Cell localIniciacaoEucaristica = linhaLocalIniciacaoEucaristica.getCell(4);
 		localIniciacaoEucaristica.setCellValue(aluno.getCatequese().getComunidade());
 
-		Row linhaPadrinhoMadrinha = sheet.getRow(39);
-		Cell padrinhoMadrinha = linhaPadrinhoMadrinha.getCell(4);
-		padrinhoMadrinha.setCellValue(
-				aluno.getDadosReligiosos().getPadrinho() + " / " + aluno.getDadosReligiosos().getMadrinha());
-
 		Row linhaParoquiaBatismo = sheet.getRow(42);
 		Cell paroquiaBatismo = linhaParoquiaBatismo.getCell(3);
 		paroquiaBatismo.setCellValue(aluno.getDadosReligiosos().getParoquiaDoBatismo());
@@ -149,7 +143,7 @@ public class ExecellService {
 		Cell bairro = linhaBairroETelefone.getCell(2);
 		bairro.setCellValue(aluno.getEndereco().getBairro());
 		Cell telefone = linhaBairroETelefone.getCell(8);
-		telefone.setCellValue(aluno.getEndereco().getTelefone1() + " / " + aluno.getEndereco().getTelefone2());
+		telefone.setCellValue(aluno.getEndereco().getTelefone1());
 
 		Row linhaFiliacaoPai = sheet.getRow(9);
 		Row linhaFiliacaoMae = sheet.getRow(10);
@@ -161,11 +155,6 @@ public class ExecellService {
 		Row linhaLocalIniciacaoEucaristica = sheet.getRow(11);
 		Cell localIniciacaoEucaristica = linhaLocalIniciacaoEucaristica.getCell(4);
 		localIniciacaoEucaristica.setCellValue(aluno.getCatequese().getComunidade());
-
-		Row linhaPadrinhoMadrinha = sheet.getRow(12);
-		Cell padrinhoMadrinha = linhaPadrinhoMadrinha.getCell(4);
-		padrinhoMadrinha.setCellValue(
-				aluno.getDadosReligiosos().getPadrinho() + " / " + aluno.getDadosReligiosos().getMadrinha());
 
 		Row linhaParoquiaBatismo = sheet.getRow(15);
 		Cell paroquiaBatismo = linhaParoquiaBatismo.getCell(3);
@@ -192,9 +181,9 @@ public class ExecellService {
 							currentRow.getCell(16).toString(), currentRow.getCell(17).toString(),
 							currentRow.getCell(18).toString().equals("Não") ? false : true,
 							currentRow.getCell(19).toString().equals("Não") ? false : true);
-					Endereco edereco = new Endereco(currentRow.getCell(8).toString(),
-							currentRow.getCell(9).toString(), currentRow.getCell(10).toString(),
-							currentRow.getCell(11).toString(), currentRow.getCell(12).toString());
+					Endereco edereco = new Endereco(currentRow.getCell(8).toString(), currentRow.getCell(9).toString(),
+							currentRow.getCell(10).toString(), currentRow.getCell(11).toString(),
+							currentRow.getCell(12).toString());
 					AlunosCrisma aluno = new AlunosCrisma(currentRow.getCell(1).toString(),
 							currentRow.getCell(2).getDateCellValue(), currentRow.getCell(3).toString(),
 							currentRow.getCell(4).toString(), currentRow.getCell(5).toString(),
