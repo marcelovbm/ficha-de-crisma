@@ -1,4 +1,4 @@
-package com.fichaCrisma.ficaCrisma;
+package com.ficha.crisma.ficha.crisma.application;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +17,7 @@ public class FicaCrismaApplication {
 		return new RouteBuilder() {
 			@Override
 			public void configure() throws Exception {
-				from("file:///Users/mmagrinelli/Documents/Catequese").to("bean:execellService?method=process");
+				from("file:///Users/mmagrinelli/Documents/CatequeseDTO").to("bean:execellService?method=process");
 			}
 		};
 	}
