@@ -21,7 +21,7 @@ import static java.io.File.separator;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ExcelService {
+public class ExcelTemplateService {
 
     private final XSSFWorkbook xssfWorkbook;
 
@@ -39,6 +39,7 @@ public class ExcelService {
                     isPrimeiroAluno = false;
                 } else {
                     inserirSegundoAluno(alunoDTO, sheet);
+                    isPrimeiroAluno = true;
                 }
 
                 var fileOut = new FileOutputStream(diretorio.getAbsolutePath() + separator + alunoDTO.getNome() + ".xlsx");

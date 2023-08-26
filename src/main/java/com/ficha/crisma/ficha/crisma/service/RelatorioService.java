@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RelatorioService {
 
-    private final ExcelService service;
+    private final ExcelTemplateService service;
 
     public void process(Exchange exchange) {
         var file = exchange.getIn().getBody(File.class);
