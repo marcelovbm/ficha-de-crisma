@@ -26,7 +26,7 @@ public class ExcelTemplateService {
     private final XSSFWorkbook xssfWorkbook;
 
     public void criarRelatorio(List<AlunoDTO> alunoDTOList) {
-        var resource = getClass().getClassLoader().getResource(".");
+        var resource = "C:\\tmp";
         var diretorio = new File(resource + separator + getComunidade(alunoDTOList));
         if (!diretorio.mkdir())
             return;

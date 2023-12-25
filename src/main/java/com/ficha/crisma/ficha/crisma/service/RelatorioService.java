@@ -6,16 +6,17 @@ import com.ficha.crisma.ficha.crisma.dto.DadosReligiososDTO;
 import com.ficha.crisma.ficha.crisma.dto.EnderecoDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,18 +27,29 @@ public class RelatorioService {
 
     private final ExcelTemplateService service;
 
-    public void process(Exchange exchange) {
-        var file = exchange.getIn().getBody(File.class);
-        var alunos = getAlunosDeCrisma(file);
+    public void process(File file) {
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            var alunos = getAlunosDeCrisma(inputStream);
+            if (alunos.isEmpty())
+                return;
+
+            this.service.criarRelatorio(alunos);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    public void process(InputStream inputStream) {
+        var alunos = getAlunosDeCrisma(inputStream);
         if (alunos.isEmpty())
             return;
 
         this.service.criarRelatorio(alunos);
     }
 
-    private List<AlunoDTO> getAlunosDeCrisma(File file) {
+    private List<AlunoDTO> getAlunosDeCrisma(InputStream inputStream) {
         List<AlunoDTO> alunoDTOList = new ArrayList<>();
-        try (FileInputStream excelFile = new FileInputStream(file); Workbook workbook = new XSSFWorkbook(excelFile)) {
+        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
             Sheet datatypeSheet = workbook.getSheetAt(0);
             for (Row currentRow : datatypeSheet) {
                 if (isCrisma(currentRow)) {
