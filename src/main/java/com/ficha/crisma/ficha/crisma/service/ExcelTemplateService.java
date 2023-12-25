@@ -1,9 +1,9 @@
 package com.ficha.crisma.ficha.crisma.service;
 
-import com.ficha.crisma.ficha.crisma.dto.AlunoDTO;
 import com.ficha.crisma.ficha.crisma.dto.CatequeseDTO;
 import com.ficha.crisma.ficha.crisma.dto.DadosReligiososDTO;
 import com.ficha.crisma.ficha.crisma.dto.EnderecoDTO;
+import com.ficha.crisma.ficha.crisma.dto.StudentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Queue;
 
 import static java.io.File.separator;
 
@@ -23,60 +24,69 @@ import static java.io.File.separator;
 @RequiredArgsConstructor
 public class ExcelTemplateService {
 
-    private final XSSFWorkbook xssfWorkbook;
+    private static final String EXCEL_TEMPLATE_FILE = "excel/template.xlsx";
 
-    public void criarRelatorio(List<AlunoDTO> alunoDTOList) {
+    public void createReport(Queue<StudentDTO> studentDTOList) throws IOException {
         var resource = "C:\\tmp";
-        var diretorio = new File(resource + separator + getComunidade(alunoDTOList));
-        if (!diretorio.mkdir())
+        var file = new File(resource + separator + getComunidade(studentDTOList));
+        if (!file.mkdir())
             return;
-        try (var wb = xssfWorkbook) {
-            var sheet = wb.getSheetAt(0);
-            boolean isPrimeiroAluno = true;
-            for (var alunoDTO : alunoDTOList) {
-                if (isPrimeiroAluno) {
-                    inserirPrimeiroAluno(alunoDTO, sheet);
-                    isPrimeiroAluno = false;
-                } else {
-                    inserirSegundoAluno(alunoDTO, sheet);
-                    isPrimeiroAluno = true;
-                }
 
-                var fileOut = new FileOutputStream(diretorio.getAbsolutePath() + separator + alunoDTO.getNome() + ".xlsx");
-                wb.write(fileOut);
-                fileOut.close();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(EXCEL_TEMPLATE_FILE);
+        assert inputStream != null;
+
+        try (var wb = new XSSFWorkbook(inputStream)) {
+            var sheet = wb.getSheetAt(0);
+            boolean isFirstStudent = true;
+            var fileName = "";
+            FileOutputStream outputStream = null;
+            while (!studentDTOList.isEmpty()) {
+                var student = studentDTOList.poll();
+                if (isFirstStudent) {
+                    insertFirstStudent(student, sheet);
+                    fileName = file.getAbsolutePath() + separator + student.getName() + ".xlsx";
+                    outputStream = new FileOutputStream(fileName);
+                    isFirstStudent = false;
+                } else {
+                    insertSecondStudent(student, sheet);
+                    isFirstStudent = true;
+                }
+                if (isFirstStudent || studentDTOList.isEmpty()) {
+                    wb.write(outputStream);
+                    outputStream.close();
+                }
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
     }
 
-    private void inserirPrimeiroAluno(AlunoDTO alunoDTO, Sheet sheet) {
-        setComunidade(alunoDTO.getCatequeseDTO().getComunidade(), sheet, true);
-        setNome(alunoDTO.getNome(), sheet, true);
-        setDataNascimento(alunoDTO.getDataNascimento(), sheet, true);
-        setGenero(alunoDTO.getSexo(), sheet, true);
-        setEndereco(alunoDTO.getEnderecoDTO(), sheet, true);
-        setBairro(alunoDTO.getEnderecoDTO(), sheet, true);
-        setTelefone(alunoDTO.getEnderecoDTO(), sheet, true);
-        setFiliacao(alunoDTO, sheet, true);
-        setLocalIniciacaoEucaristica(alunoDTO.getCatequeseDTO(), sheet, true);
-        setParoquiaBatismo(alunoDTO.getDadosReligiososDTO(), sheet, true);
-        setDataBatizado(alunoDTO.getDadosReligiososDTO(), sheet, true);
+    private void insertFirstStudent(StudentDTO studentDTO, Sheet sheet) {
+        setComunidade(studentDTO.getCatequeseDTO().getComunidade(), sheet, true);
+        setNome(studentDTO.getName(), sheet, true);
+        setDataNascimento(studentDTO.getBirthdayDate(), sheet, true);
+        setGenero(studentDTO.getSex(), sheet, true);
+        setEndereco(studentDTO.getAddressDTO(), sheet, true);
+        setBairro(studentDTO.getAddressDTO(), sheet, true);
+        setTelefone(studentDTO.getAddressDTO(), sheet, true);
+        setFiliacao(studentDTO, sheet, true);
+        setLocalIniciacaoEucaristica(studentDTO.getCatequeseDTO(), sheet, true);
+        setParoquiaBatismo(studentDTO.getDadosReligiososDTO(), sheet, true);
+        setDataBatizado(studentDTO.getDadosReligiososDTO(), sheet, true);
     }
 
-    private void inserirSegundoAluno(AlunoDTO alunoDTO, Sheet sheet) {
-        setComunidade(alunoDTO.getCatequeseDTO().getComunidade(), sheet, false);
-        setNome(alunoDTO.getNome(), sheet, false);
-        setDataNascimento(alunoDTO.getDataNascimento(), sheet, false);
-        setGenero(alunoDTO.getSexo(), sheet, false);
-        setEndereco(alunoDTO.getEnderecoDTO(), sheet, false);
-        setBairro(alunoDTO.getEnderecoDTO(), sheet, false);
-        setTelefone(alunoDTO.getEnderecoDTO(), sheet, false);
-        setFiliacao(alunoDTO, sheet, false);
-        setLocalIniciacaoEucaristica(alunoDTO.getCatequeseDTO(), sheet, false);
-        setParoquiaBatismo(alunoDTO.getDadosReligiososDTO(), sheet, false);
-        setDataBatizado(alunoDTO.getDadosReligiososDTO(), sheet, false);
+    private void insertSecondStudent(StudentDTO studentDTO, Sheet sheet) {
+        setComunidade(studentDTO.getCatequeseDTO().getComunidade(), sheet, false);
+        setNome(studentDTO.getName(), sheet, false);
+        setDataNascimento(studentDTO.getBirthdayDate(), sheet, false);
+        setGenero(studentDTO.getSex(), sheet, false);
+        setEndereco(studentDTO.getAddressDTO(), sheet, false);
+        setBairro(studentDTO.getAddressDTO(), sheet, false);
+        setTelefone(studentDTO.getAddressDTO(), sheet, false);
+        setFiliacao(studentDTO, sheet, false);
+        setLocalIniciacaoEucaristica(studentDTO.getCatequeseDTO(), sheet, false);
+        setParoquiaBatismo(studentDTO.getDadosReligiososDTO(), sheet, false);
+        setDataBatizado(studentDTO.getDadosReligiososDTO(), sheet, false);
     }
 
     private void setComunidade(String comunidade, Sheet sheet, boolean isPrimeiroAluno) {
@@ -123,13 +133,13 @@ public class ExcelTemplateService {
         telefone.setCellValue(enderecoDTO.getTelefone());
     }
 
-    private void setFiliacao(AlunoDTO alunoDTO, Sheet sheet, boolean isPrimeiroAluno) {
+    private void setFiliacao(StudentDTO studentDTO, Sheet sheet, boolean isPrimeiroAluno) {
         var rowPai = sheet.getRow(isPrimeiroAluno ? 9 : 36);
         var cellPai = rowPai.getCell(3);
-        cellPai.setCellValue(alunoDTO.getPai());
+        cellPai.setCellValue(studentDTO.getFather());
         var rowMae = sheet.getRow(isPrimeiroAluno ? 10 : 37);
         var cellMae = rowMae.getCell(3);
-        cellMae.setCellValue(alunoDTO.getMae());
+        cellMae.setCellValue(studentDTO.getMother());
     }
 
     private void setLocalIniciacaoEucaristica(CatequeseDTO catequeseDTO, Sheet sheet, boolean isPrimeiroAluno) {
@@ -150,9 +160,9 @@ public class ExcelTemplateService {
         cell.setCellValue(dadosReligiososDTO.getBatismo());
     }
 
-    private String getComunidade(List<AlunoDTO> alunoDTOList) {
-        return alunoDTOList.stream()
-                .map(AlunoDTO::getComunidade)
+    private String getComunidade(Queue<StudentDTO> studentDTOList) {
+        return studentDTOList.stream()
+                .map(StudentDTO::getComunidade)
                 .findFirst()
                 .orElse("");
     }

@@ -16,27 +16,27 @@ import static org.apache.logging.log4j.util.Strings.EMPTY;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlunoDTO {
+public class StudentDTO {
 
-    private String nome;
-    private LocalDate dataNascimento;
-    private String idade;
-    private String sexo;
-    private String pai;
-    private String mae;
+    private String name;
+    private LocalDate birthdayDate;
+    private String age;
+    private String sex;
+    private String father;
+    private String mother;
     private String estadoCivil;
-    private EnderecoDTO enderecoDTO;
+    private EnderecoDTO addressDTO;
     private DadosReligiososDTO dadosReligiososDTO;
     private CatequeseDTO catequeseDTO;
 
-    public static AlunoDTOBuilder create(Row row) {
-        return AlunoDTO.builder()
-                .nome(row.getCell(1).toString())
-                .dataNascimento(row.getCell(2).getLocalDateTimeCellValue().toLocalDate())
-                .idade(row.getCell(3).toString())
-                .sexo(row.getCell(4).toString())
-                .pai(row.getCell(5).toString())
-                .mae(row.getCell(6).toString())
+    public static StudentDTOBuilder create(Row row) {
+        return StudentDTO.builder()
+                .name(row.getCell(1).toString())
+                .birthdayDate(row.getCell(2).getLocalDateTimeCellValue().toLocalDate())
+                .age(row.getCell(3).toString())
+                .sex(row.getCell(4).toString())
+                .father(row.getCell(5).toString())
+                .mother(row.getCell(6).toString())
                 .estadoCivil(row.getCell(7).toString());
     }
 
@@ -49,6 +49,6 @@ public class AlunoDTO {
     @Override
     public String toString() {
         return format("[Aluno: {0}; Idade: {1}; EnderecoDTO: {2}; Catequista: {3}]",
-                this.nome, this.idade, this.enderecoDTO.getNome(), this.catequeseDTO.getCatequista());
+                this.name, this.age, this.addressDTO.getNome(), this.catequeseDTO.getCatequista());
     }
 }
